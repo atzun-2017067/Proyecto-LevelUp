@@ -1,5 +1,5 @@
 const { request, response } = require('express');
-const CursoCarrito = require('../models/CursoCarrito');
+const CursoCarrito = require('../models/cursoCarrito');
 const Carrito = require('../models/carrito');
 const Curso = require('../models/curso');
 
@@ -58,9 +58,19 @@ const agregarAlCarrito = async (req = request, res = response) => {
         const errores = [];
         // Agrega las entradas en la tabla CursoCarrito para relacionar los cursos y el carrito
         const cursoCarritoPromises = cursoIds.map(async (cursoId) => {
+            // Verificar si el curso ya está en el carrito
+            const cursoCarritoExistente = await CursoCarrito.findOne({
+                where: { cursoId, carritoId: carrito.id }
+            });
+
+            if (cursoCarritoExistente) {
+                const curso = await Curso.findByPk(cursoId);
+                errores.push(`El Curso de ${curso.nombreCurso} con ID ${cursoId} ya está en el carrito.`);
+                return null;
+            }
+
             const curso = await Curso.findByPk(cursoId);
             if (!curso) {
-                console.error(`Curso con ID ${cursoId} no encontrado.`);
                 errores.push(`Curso con ID ${cursoId} no encontrado.`);
                 return null;
             }

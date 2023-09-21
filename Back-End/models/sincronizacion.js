@@ -1,7 +1,7 @@
 // Importa los modelos
 const Curso = require('./curso');
 const Carrito = require('./carrito');
-const CursoCarrito = require('./CursoCarrito');
+const CursoCarrito = require('./cursoCarrito');
 
 // Configura las relaciones
 Curso.belongsToMany(Carrito, {

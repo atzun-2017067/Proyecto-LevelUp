@@ -1,13 +1,13 @@
 const { Router } = require('express');
 
 const { validarCampos } = require('../middlewares/validar-campos');
-const { mostrarSesion, getCarrito, agregarAlCarrito, deleteCursoCarrito, deleteCarrito } = require('../controllers/CursoCarrito');
+const { mostrarSesion, getCarrito, agregarAlCarrito, deleteCursoCarrito, deleteCarrito } = require('../controllers/cursoCarrito');
 
 const router = Router();
 
 router.get('/mostrar/sesion', mostrarSesion);
 
-router.get('/mostrar/:carritoId', getCarrito);
+router.get('/mostrar', getCarrito);
 
 router.post('/agregar', [
     validarCampos

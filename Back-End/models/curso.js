@@ -18,7 +18,7 @@ const Curso = dbConnection.define('Curso', {
         }
     },
     modalidad: {
-        type: DataTypes.ENUM(['Presencial', 'Virtual, con clases en vivo(sincronico)']),
+        type: DataTypes.ENUM(['Presencial', 'Virtual, con clases en vivo(sincrónico)']),
         allowNull: false, // No se permite un valor nulo
         validate: {
             notNull: {
@@ -46,16 +46,16 @@ const Curso = dbConnection.define('Curso', {
         type: DataTypes.TEXT,
     },
     requisitosEquipo: {
-        type: DataTypes.TEXT,
+        type: DataTypes.JSON, // Cambia el tipo de datos a JSON
         allowNull: false,
-        validate: {
-            notNull: {
-                msg: 'Los requisitos para el equipo son requeridos'
-            },
-            notEmpty: {
-                msg: 'Los requisitos para el equipo no puede estar vacío'
-            }
-        }
+        get() {
+            // Al recuperar los datos, convierte la cadena JSON a un objeto JavaScript
+            return JSON.parse(this.getDataValue('requisitosEquipo'));
+        },
+        set(val) {
+            // Al guardar los datos, convierte el objeto JavaScript a una cadena JSON
+            this.setDataValue('requisitosEquipo', JSON.stringify(val));
+        },
     },
     precioCurso: {
         type: DataTypes.DECIMAL,
@@ -96,14 +96,15 @@ const Curso = dbConnection.define('Curso', {
         }
     },
     especialidad: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM(['Marketing', 'Tecnología']),
         allowNull: false,
         validate: {
             notNull: {
                 msg: 'La especialidad del curso es requerido'
             },
-            notEmpty: {
-                msg: 'La especialidad del curso no puede estar vacío'
+            isIn: {
+                args: [['Marketing', 'Tecnología']],
+                msg: 'La especialidad debe ser "Marketing" o "Tecnología"'
             }
         }
     },

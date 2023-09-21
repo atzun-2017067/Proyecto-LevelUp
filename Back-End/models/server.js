@@ -51,7 +51,7 @@ class Server {
     routes() {
         this.app.use(this.paths.curso, require('../routes/curso'));
         this.app.use(this.paths.carrito, require('../routes/carrito'));
-        this.app.use(this.paths.cursocarrito, require('../routes/CursoCarrito'));
+        this.app.use(this.paths.cursocarrito, require('../routes/cursoCarrito'));
     }
 
     listen() {
