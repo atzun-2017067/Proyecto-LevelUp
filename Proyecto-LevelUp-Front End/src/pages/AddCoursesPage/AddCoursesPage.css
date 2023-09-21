@@ -3,6 +3,11 @@
   src: url('../../assets/fonts/Poppins-Light.ttf') format('ttf');
 }
 
+@font-face {
+  font-family: 'Nunito';
+  src: url('../../assets/fonts/Nunito-Light.ttf') format('ttf');
+}
+
 .glo {
   background-image: url('../../assets/img/background.png');
   overflow: hidden;
@@ -25,14 +30,17 @@
   padding-bottom: 2%;
   height: 100%;
   align-items: center;
-  width: 35%;
+  width: 40%;
 }
 
 h1{
   align-items: center;
   text-align: center;
   padding-top: 2%;
-  font-family: 'Poppins';
+  font-family: 'Nunito';
+  font-size: 3vw;
+  font-weight: bold;
+  color: #ff2e17;
 
 }
 
@@ -46,6 +54,7 @@ h1{
   padding-right: 1px;
   height: 100%;
   align-items: center;
+  padding-bottom: 50px;
 }
 
 
@@ -55,7 +64,7 @@ h1{
 
 }
 
-.fo {
+input{
   --timing: 0.3s;
   --width-of-input: 200px;
   --height-of-input: 40px;
@@ -72,32 +81,23 @@ h1{
   border-radius: var(--border-radius);
   transition: border-radius 0.5s ease;
   background: var(--input-bg,#fff);
-  border-right: 2px #999999 solid;
-  border-left: 2px #999999 solid;
-  border-top: 2px #999999 solid;
-  border-bottom: 2px #999999 solid
+  border-right: 2px #929d9b solid;
+  border-left: 2px #929d9b solid;
+  border-top: 2px #929d9b solid;
+  border-bottom: 2px #929d9b solid
 }
 
 .pe{
-  font-family: 'Poppins';
+  font-family: 'Nunito';
   font-size: 15px;
+  size: 30px;
   width: 100%;
+  font-weight: 800;
+  color: #ff2e17;
 }
 
 
-input {
-  font-size: 1rem;
-  background-color: white;
-  width: 100%;
-  height: 100%;
-  padding-inline: 0.5em;
-  padding-block: 0.7em;
-  /* border: none; */
-  border-radius: 10px;
-  border:#999999 1px solid;
-}
-
-.fo:before {
+input:before {
   content: "";
   position: absolute;
   background: var(--border-color);
@@ -111,7 +111,7 @@ input {
   transition: transform var(--timing) ease;
 }
 
-.fo:focus-within {
+input:focus-within {
   border-radius: var(--after-border-radius);
 }
 
@@ -121,6 +121,20 @@ input:focus {
 
 .form-select:focus {
   outline: none;
+}
+
+
+.form-select{
+  outline: none;
+  font-size: 1rem;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  padding-inline: 0.5em;
+  padding-block: 0.7em;
+  /* border: none; */
+  border-radius: 20px;
+  border: 2px #929d9b solid
 }
 
 .fo:focus-within:before {
@@ -144,10 +158,23 @@ input[type="file"] {
   display: none;
 }
 
+/* Estilo para quitar las flechas en navegadores basados en WebKit (Chrome, Safari) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0; /* Opcional: puede variar según el navegador */
+}
+
+/* Estilo para quitar las flechas en otros navegadores (Firefox) */
+input[type="number"] {
+    appearance: textfield;
+}
+
 
 .custom-file-input {
   display: inline-block;
-  background-color: #ff0000;
+  background-color: #ff2e17;
   color: #fff;
   padding: 10px 20px;
   cursor: pointer;
@@ -185,8 +212,8 @@ input[type="file"] {
   border: none;
   border-radius: 5px;
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
-  background: #ff0000;
-  transform: translateX(150px);
+  background: #ff2e17;
+  transform: translateX(180px);
 }
 
 .noselect,
