@@ -1,0 +1,20 @@
+body {
+  background-color: #ffffff;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('../../assets/fonts/NunitoSans_10pt-Light.ttf') format('ttf');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../../assets/fonts/Poppins-Light.ttf') format('ttf');
+}
+
+.title {
+  font-family: 'Poppins';
+  text-align: center;
+  font-size: 70px;
+  font-weight: 400;
+}
