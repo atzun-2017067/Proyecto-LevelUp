@@ -12,6 +12,7 @@ const getCurso = async (req = request, res = response) => {
             ...curso.toJSON(),
             createdAt: new Date(curso.createdAt).toLocaleString('es-GT', { timeZone: 'America/Guatemala' }),
             updatedAt: new Date(curso.updatedAt).toLocaleString('es-GT', { timeZone: 'America/Guatemala' }),
+            requisitosEquipo: curso.requisitosEquipo, // Analizar la cadena JSON
         }));
 
         console.log('Cursos encontrados:', cursosFormateados);
@@ -30,7 +31,6 @@ const postCurso = async (req = request, res = response) => {
             modalidad,
             pensum,
             descripcion,
-            requisitosEquipo,
             precioCurso,
             precioPracticaMes,
             duracion,
@@ -45,37 +45,59 @@ const postCurso = async (req = request, res = response) => {
             return res.status(400).json({ error: 'El nombre del curso es requerido' });
         }
 
-        const nombreCursoExiste = await Curso.findOne({ where: { nombreCurso } });
-
-        if (!nombreCursoExiste) {
-            const nuevoCurso = await Curso.create({
+        // Verificar si el nombre del curso ya existe en la misma especialidad
+        const cursoExistente = await Curso.findOne({
+            where: {
                 nombreCurso,
-                modalidad,
-                pensum,
-                descripcion,
-                requisitosEquipo,
-                precioCurso,
-                precioPracticaMes,
-                duracion,
-                especialidad,
-                enlaceRegistro,                
-                imagenPortada,
-                estado
-            });
+                especialidad
+            }
+        });
 
-            // Formatea las fechas antes de enviar la respuesta
-            const cursoGuardado = nuevoCurso.toJSON();
-            cursoGuardado.createdAt = new Date(cursoGuardado.createdAt).toLocaleString();
-            cursoGuardado.updatedAt = new Date(cursoGuardado.updatedAt).toLocaleString();
-
-            res.status(201).json({
-                ok: true,
-                curso: cursoGuardado
-            });
-
-        } else {
-            res.status(400).json({ error: 'El nombre del curso ya existe' })
+        if (cursoExistente) {
+            return res.status(400).json({ error: 'El nombre del curso ya existe en esta especialidad' });
         }
+
+        let requisitosEquipo = [];
+
+        // Definir requisitos de equipo según la especialidad
+        if (especialidad === 'Marketing') {
+            requisitosEquipo = [
+                'Computadora con procesador Core i5 o superior',
+                '4GB de RAM'
+            ];
+        } else if (especialidad === 'Tecnología') {
+            requisitosEquipo = [
+                'Computadora con procesador i7 o superior',
+                '4GB de RAM',
+                'Internet de 10MB'
+            ];
+        }
+
+        const nuevoCurso = await Curso.create({
+            nombreCurso,
+            modalidad,
+            pensum,
+            descripcion,
+            requisitosEquipo,
+            precioCurso,
+            precioPracticaMes,
+            duracion,
+            especialidad,
+            enlaceRegistro,
+            imagenPortada,
+            estado
+        });
+
+        // Formatea las fechas antes de enviar la respuesta
+        const cursoGuardado = nuevoCurso.toJSON();
+        cursoGuardado.createdAt = new Date(cursoGuardado.createdAt).toLocaleString();
+        cursoGuardado.updatedAt = new Date(cursoGuardado.updatedAt).toLocaleString();
+
+        res.status(201).json({
+            ok: true,
+            curso: cursoGuardado
+        });
+
     } catch (error) {
         // Captura los errores personalizados definidos en el modelo Sequelize
         if (error.name === 'SequelizeValidationError') {
@@ -94,6 +116,7 @@ const postCurso = async (req = request, res = response) => {
     }
 }
 
+
 const putCurso = async (req = request, res = response) => {
     const { id } = req.params
 
@@ -102,7 +125,6 @@ const putCurso = async (req = request, res = response) => {
         modalidad,
         pensum,
         descripcion,
-        requisitosEquipo,
         precioCurso,
         precioPracticaMes,
         duracion,
@@ -111,6 +133,8 @@ const putCurso = async (req = request, res = response) => {
         imagenPortada,
         estado
     } = req.body
+
+    let cursoMismoNombre; // Declarar cursoMismoNombre fuera del bloque if
 
     try {
         // Verificar si el curso con el ID proporcionado existe
@@ -122,11 +146,32 @@ const putCurso = async (req = request, res = response) => {
 
         // Verificar si el nombre del curso se ha cambiado y si ya existe otro curso con el nuevo nombre
         if (nombreCurso !== cursoExistente.nombreCurso) {
-            const nombreCursoExistente = await Curso.findOne({ where: { nombreCurso } });
+            cursoMismoNombre = await Curso.findOne({
+                where: {
+                    nombreCurso,
+                    especialidad
+                }
+            });
 
-            if (nombreCursoExistente) {
-                return res.status(400).json({ error: 'El nombre del curso ya existe' });
+            if (cursoMismoNombre) {
+                return res.status(400).json({ error: 'El nombre del curso ya existe en esta especialidad' });
             }
+        }
+
+        // Definir requisitos de equipo según la especialidad
+        let requisitosEquipo = cursoExistente.requisitosEquipo;
+
+        if (especialidad === 'Marketing') {
+            requisitosEquipo = [
+                'Computadora con procesador Core i5 o superior',
+                '4GB de RAM'
+            ];
+        } else if (especialidad === 'Tecnología') {
+            requisitosEquipo = [
+                'Computadora con procesador i7 o superior',
+                '4GB de RAM',
+                'Internet de 10MB'
+            ];
         }
 
         // Intenta actualizar el curso con los datos proporcionados
@@ -173,6 +218,7 @@ const putCurso = async (req = request, res = response) => {
     }
 }
 
+
 const deleteCurso = async (req = request, res = response) => {
     const { id } = req.params
 
@@ -196,7 +242,7 @@ const deleteCurso = async (req = request, res = response) => {
             error: 'Error al eliminar el curso'
         });
     }
-    
+
 }
 
 
