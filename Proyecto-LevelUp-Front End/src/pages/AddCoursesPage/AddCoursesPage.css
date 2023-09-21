@@ -1,0 +1,271 @@
+@font-face {
+  font-family: 'Poppins';
+  src: url('../../assets/fonts/Poppins-Light.ttf') format('ttf');
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('../../assets/fonts/Nunito-Light.ttf') format('ttf');
+}
+
+.glo {
+  background-image: url('../../assets/img/background.png');
+  overflow: hidden;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 2%;
+  padding-bottom: 2%;
+  height: 100%;
+  align-items: center;
+}
+
+
+.conte {
+  justify-content: center;
+  align-items: center;
+  padding-top: 2%;
+  padding-bottom: 2%;
+  height: 100%;
+  align-items: center;
+  width: 40%;
+}
+
+h1{
+  align-items: center;
+  text-align: center;
+  padding-top: 2%;
+  font-family: 'Nunito';
+  font-size: 3vw;
+  font-weight: bold;
+  color: #ff2e17;
+
+}
+
+.contenedor {
+  display: grid;
+  grid-template-rows: repeat(5, 1fr);
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  width: 100%;
+  padding: 10px;
+  padding-right: 1px;
+  height: 100%;
+  align-items: center;
+  padding-bottom: 50px;
+}
+
+
+.item {
+  align-items: center;
+  width: 80%;
+
+}
+
+input{
+  --timing: 0.3s;
+  --width-of-input: 200px;
+  --height-of-input: 40px;
+  --border-height: 2px;
+  --input-bg: #ffffff;
+  --border-radius: 30px ;
+  --after-border-radius: 3px;
+  position: relative;
+  width: var(--width-of-input);
+  height: var(--height-of-input);
+  display: flex;
+  align-items: center;
+  padding-inline: 0.8em;
+  border-radius: var(--border-radius);
+  transition: border-radius 0.5s ease;
+  background: var(--input-bg,#fff);
+  border-right: 2px #929d9b solid;
+  border-left: 2px #929d9b solid;
+  border-top: 2px #929d9b solid;
+  border-bottom: 2px #929d9b solid
+}
+
+.pe{
+  font-family: 'Nunito';
+  font-size: 15px;
+  size: 30px;
+  width: 100%;
+  font-weight: 800;
+  color: #ff2e17;
+}
+
+
+input:before {
+  content: "";
+  position: absolute;
+  background: var(--border-color);
+  transform: scaleX(0);
+  transform-origin: center;
+  width: 100%;
+  height: var(--border-height);
+  left: 0;
+  bottom: 0;
+  border-radius: 1px;
+  transition: transform var(--timing) ease;
+}
+
+input:focus-within {
+  border-radius: var(--after-border-radius);
+}
+
+input:focus {
+  outline: none;
+}
+
+.form-select:focus {
+  outline: none;
+}
+
+
+.form-select{
+  outline: none;
+  font-size: 1rem;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  padding-inline: 0.5em;
+  padding-block: 0.7em;
+  /* border: none; */
+  border-radius: 20px;
+  border: 2px #929d9b solid
+}
+
+.fo:focus-within:before {
+  transform: scale(1);
+}
+
+.reset {
+  border: none;
+  background: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+input:not(:placeholder-shown) ~ .reset {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+input[type="file"] {
+  display: none;
+}
+
+/* Estilo para quitar las flechas en navegadores basados en WebKit (Chrome, Safari) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0; /* Opcional: puede variar según el navegador */
+}
+
+/* Estilo para quitar las flechas en otros navegadores (Firefox) */
+input[type="number"] {
+    appearance: textfield;
+}
+
+
+.custom-file-input {
+  display: inline-block;
+  background-color: #ff2e17;
+  color: #fff;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 20px;
+  width: 200px;
+}
+
+.custom-file-input:hover {
+  display: inline-block;
+  background-color: #c41b1b;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 20px;
+  width: 200px;
+}
+
+.custom-file-input i {
+  padding: 5px;
+}
+
+
+.custom-file-label {
+  font-weight: bold;
+}
+
+.noselect {
+  width: 150px;
+  height: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+  background: #ff2e17;
+  transform: translateX(180px);
+}
+
+.noselect,
+.noselect i {
+  transition: 100ms;
+}
+
+.noselect .text {
+  transform: translateX(30px);
+  color: white;
+  font-weight: bold;
+}
+
+.noselect .icon {
+  position: absolute;
+  border-left: 1px solid #c41b1b;
+  transform: translateX(100px);
+  height: 40px;
+  width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.noselect i {
+  width: 50px;
+  fill: #eee;
+  color: white;
+}
+
+.noselect:hover {
+  background: #ff3636;
+}
+
+.noselect:hover .text {
+  color: transparent;
+}
+
+.noselect:hover .icon {
+  width: 150px;
+  border-left: none;
+  transform: translateX(0);
+}
+
+.noselect:focus {
+  outline: none;
+}
+
+.noselect:active .icon i {
+  transform: scale(0.9);
+}
+
+.fo .noselect{
+  align-items: center;
+}
