@@ -9,7 +9,7 @@ export const AddCoursesPage = () => {
         modalidad: '',
         pensum: '',
         descripcion: '',
-        requisitosEquipo: '',
+        // requisitosEquipo: '',
         precioCurso: '',
         precioPracticaMes: '',
         duracion: '',
@@ -17,6 +17,21 @@ export const AddCoursesPage = () => {
         // imagenPortada: '',
         estado: true, // Valor predeterminado
     });
+    const clearForm = () => {
+        setCurso({
+            nombreCurso: '',
+            modalidad: '',
+            pensum: '',
+            descripcion: '',
+            precioCurso: '',
+            precioPracticaMes: '',
+            duracion: '',
+            especialidad: '',
+            estado: true,
+        });
+    };
+
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -32,30 +47,26 @@ export const AddCoursesPage = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Respuesta del servidor:', data); // Muestra la respuesta del servidor en la consola
+                console.log('Respuesta del servidor:', data);
+
                 Swal.fire({
                     icon: 'success',
                     title: 'Éxito',
                     text: 'El curso se agregó correctamente',
                     confirmButtonText: 'OK'
                 });
+                clearForm();
             } else {
                 console.error('Error en la solicitud al servidor');
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: response.error,
+                    text: 'INGRESE TODOS LOS DATOS SOLICITADOS',
                     confirmButtonText: 'OK'
                 });
             }
         } catch (error) {
             console.error('Error al agregar el curso:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: data.errores,
-                confirmButtonText: 'OK'
-            });
         }
     };
 
@@ -75,20 +86,21 @@ export const AddCoursesPage = () => {
                 <div className="conte">
 
 
-                <form className="form" onSubmit={handleSubmit}>
-                    <div className="contenedor">
-                        <div className="item">
-                            <p className='pe'>Nombre</p>
-                            <input
+                    <form className="form" onSubmit={handleSubmit}>
+                        <div className="contenedor">
+                            <div className="item">
+                                <p className='pe'>Nombre</p>
+                                <input
                                     type="text"
                                     name="nombreCurso"
                                     value={curso.nombreCurso}
                                     onChange={handleChange}
+                                    placeholder="ej. Curso"
                                     id='nombreCurso'
                                 />
-                        </div>
-                        <div className="item">
-                            <p className='pe'>Modalidad</p>
+                            </div>
+                            <div className="item">
+                                <p className='pe'>Modalidad</p>
                                 <select
                                     className='form-select'
                                     id='modalidad'
@@ -96,12 +108,13 @@ export const AddCoursesPage = () => {
                                     value={curso.modalidad}
                                     onChange={handleChange}
                                 >
+                                    <option value="">seleccione una opcion</option>
                                     <option value="Presencial">Presencial</option>
-                                    <option value='Virtual, con clases en vivo(sincronico)'>Virtual, con clases en vivo(sincrónico)</option>
+                                    <option value='Virtual, con clases en vivo(sincronico)'>Virtual, con clases en vivo</option>
                                 </select>
-                        </div>
-                        <div className="item">
-                            <p className='pe'>Pensum</p>
+                            </div>
+                            <div className="item">
+                                <p className='pe'>Pensum</p>
 
                                 <input
                                     type="text"
@@ -109,44 +122,53 @@ export const AddCoursesPage = () => {
                                     id='pensum'
                                     value={curso.pensum}
                                     onChange={handleChange}
+                                    placeholder="ej. Certificado de..."
                                 />
 
-                        </div>
-                        <div class="item">
-                            <p className='pe'>Descripcion</p>
-
-                            <input
-                            id='descripcion'
-  type="text"
-  name="descripcion"
-  value={curso.descripcion}
-  onChange={handleChange}
-/>
-                        </div>
-                        <div class="item">
-                            <p className='pe'>Requisitos de equipo</p>
+                            </div>
+                            <div class="item">
+                                <p className='pe'>Descripcion</p>
 
                                 <input
+                                    id='descripcion'
                                     type="text"
-                                    name="requisitosEquipo"
-                                    value={curso.requisitosEquipo}
+                                    name="descripcion"
+                                    value={curso.descripcion}
+                                    maxLength={232}
+                                    placeholder="max. 232 letras"
                                     onChange={handleChange}
-                                    id='requisitosEquipo'
                                 />
-                        </div>
-                        <div class="item">
-                            <p className='pe'>Tarifa del curso</p>
+                            </div>
+                            <div class="item">
+                                <p className='pe'>Especialidad</p>
+
+                                <select
+                                    className='form-select'
+                                    id='especialidad'
+                                    name="especialidad"
+                                    value={curso.especialidad}
+                                    onChange={handleChange}
+                                >
+                                    <option value="">seleccione una opcion</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value='Tecnología'>Tecnología</option>
+                                </select>
+
+                            </div>
+                            <div class="item">
+                                <p className='pe'>Tarifa del curso</p>
 
                                 <input
                                     type="number"
                                     name="precioCurso"
                                     id='precioCurso'
                                     value={curso.precioCurso}
+                                    placeholder="ej. 200"
                                     onChange={handleChange}
                                 />
-                          </div>
-                        <div class="item">
-                            <p className='pe'>Precio por mes</p>
+                            </div>
+                            <div class="item">
+                                <p className='pe'>Precio por mes</p>
 
                                 <input
                                     type="number"
@@ -154,30 +176,41 @@ export const AddCoursesPage = () => {
                                     name="precioPracticaMes"
                                     value={curso.precioPracticaMes}
                                     onChange={handleChange}
+                                    placeholder="ej. 200"
                                 />
-                      </div>
-                        <div class="item">
-                            <p className='pe'>Duracion</p>
+                            </div>
+                            <div class="item">
+                                <p className='pe'>Duracion</p>
 
                                 <input
                                     type="text"
                                     id='duracion'
                                     name="duracion"
                                     value={curso.duracion}
+                                    placeholder="ej. 5 meses"
                                     onChange={handleChange}
                                 />
-
-                        </div>
-                        <div class="item">
-                            <p className='pe'>Especialidad</p>
-
-                                <input
-                                    type="text"
-                                    id='especialidad'
-                                    name="especialidad"
-                                    value={curso.especialidad}
-                                    onChange={handleChange}
-                                />
+                            </div>
+                            <div>
+                                <p className='pe'>Requisitos min. del equipo</p>
+                                {curso.especialidad === 'Marketing' ? (
+                                    <ul>
+                                        <li>Computadora con procesador Core i5 o superior</li>
+                                        <li>4GB de RAM</li>
+                                    </ul>
+                                ) : curso.especialidad === 'Tecnología' ? (
+                                    <ul>
+                                        <li>Computadora con procesador i7 o superior</li>
+                                        <li>4GB de RAM</li>
+                                        <li>Internet de 10MB</li>
+                                    </ul>
+                                ) : (
+                                    <ul>
+                                        <li style={{ listStyle: 'none' }}>⠀⠀⠀</li>
+                                        <li style={{ listStyle: 'none' }}>⠀⠀⠀</li>
+                                        <li style={{ listStyle: 'none' }}>⠀⠀⠀</li>
+                                    </ul>
+                                )}
                             </div>
                             <div class="item">
                                 <p className='pe'>Agregar Imagen</p>
@@ -193,21 +226,15 @@ export const AddCoursesPage = () => {
                                     />
                                 </label>
                             </div>
-                    </div>
-                    <button className="noselect" type='submit'>
-                    <span class="text">Agregar</span>
-                    <span class="icon"><i class="bi bi-check2-all fs-2"></i></span>
-                </button>
+                        </div>
+                        <button className="noselect" type='submit'>
+                            <span class="text">Agregar</span>
+                            <span class="icon"><i class="bi bi-check2-all fs-2"></i></span>
+                        </button>
                     </form>
 
 
                 </div>
-                {/* <button className="noselect" type='submit'>
-                    <span class="text">Agregar</span>
-                    <span class="icon"><i class="bi bi-check2-all fs-2"></i></span>
-                </button> */}
-
-
             </div>
         </>
     )
