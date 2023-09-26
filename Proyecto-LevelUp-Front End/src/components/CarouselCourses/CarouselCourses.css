@@ -204,3 +204,33 @@
     grid-auto-columns: 100%;
   }
 }
+
+@media screen and (max-width: 600px) {
+  #left,
+  #right {
+    display: none; /* Oculta los botones izquierdo y derecho en pantallas pequeñas */
+  }
+
+  .wrapper .carousel {
+    grid-auto-columns: 100%; /* Ajusta las columnas para ocupar el ancho completo */
+    padding-top: 5%; /* Agrega un espacio en la parte superior */
+  }
+
+  .carousel .card {
+    width: 80%; /* Reduce el ancho de las tarjetas */
+    margin: 0 auto; /* Centra las tarjetas horizontalmente */
+  }
+}
+
+/* Otras media queries para ajustar las columnas en diferentes tamaños de pantalla */
+@media screen and (max-width: 900px) {
+  .wrapper .carousel {
+    grid-auto-columns: calc((100% / 2) - 9px);
+  }
+}
+
+@media screen and (max-width: 819px) {
+  .wrapper .carousel {
+    grid-auto-columns: calc((90% / 3) - 9px);
+  }
+}

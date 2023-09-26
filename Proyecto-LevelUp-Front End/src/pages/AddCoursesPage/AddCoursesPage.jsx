@@ -131,7 +131,7 @@ export const AddCoursesPage = () => {
 
                                 <input
                                     id='descripcion'
-                                    type="text"
+                                    type="form-control"
                                     name="descripcion"
                                     value={curso.descripcion}
                                     maxLength={232}
