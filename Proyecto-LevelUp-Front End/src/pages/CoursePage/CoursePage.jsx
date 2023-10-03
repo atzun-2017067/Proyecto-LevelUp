@@ -1,39 +1,22 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import './CoursePage.css';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { CarouselCourses } from '../../components/CarouselCourses/CarouselCourses'
 import ImageLogo from '../../assets/img/LevelUp-Icono.png'
+import Image from '../../assets/img/re.jpg'
 
 export const CoursePage = () => {
-    const [scrolled, setScrolled] = useState(false);
-    const [showInitialContent, setShowInitialContent] = useState(true);
-
-    useEffect(() => {
-        // Función para manejar el scroll
-        const handleScroll = () => {
-            if (window.scrollY > 0) {
-                setScrolled(true);
-                setShowInitialContent(false); // Cambia el contenido cuando se hace scroll
-            } else {
-                setScrolled(false);
-                setShowInitialContent(true); // Vuelve al contenido inicial cuando vuelvas al inicio
-            }
-        };
-
-        // Agregar el listener de scroll
-        window.addEventListener('scroll', handleScroll);
-
-        // Remover el listener cuando el componente se desmonte
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
+    const url = 'https://levelup.gt/form';
+    const abrirURL = () => {
+        window.location.href = url;
+      };
 
     return (
         <>
             <Navbar></Navbar>
             <div className='s'>
-                <div className={`info ${scrolled ? 'scrolled' : ''}`}>
+                <div className='info'>
                     <h1>HTML</h1>
                     <p className='p'>sasdfadfdsadfasdfasdfasdffffffffffffffffffffff.</p>
                     <div className="cont">
@@ -41,33 +24,58 @@ export const CoursePage = () => {
                             <h3 className="subs">Modalidad</h3>
                             <p className="mod">asfdaasdfasdfsd</p></div>
                         <div className="subcon">
-                            <h3 className="subs">Tecnologia</h3>
+                            <h3 className="subs">Especialidad</h3>
                             <p className="mod">asfdaasdfasdfsd</p></div>
                     </div>
                     <div className="fraseimag">
-                    <h1 className="frase">Con nosotros llegaras al siguiente Nivel</h1>
-                    <img src={ImageLogo} alt="" />
+                        <h1 className="frase">Con nosotros llegaras al siguiente Nivel</h1>
+                        <img src={ImageLogo} alt="" />
                     </div>
                 </div>
-                <div id="divFijo" className={scrolled ? 'scrolled' : ''}>
-                    {showInitialContent ? (
-                        // Contenido inicial
-                        <div>
-                            <h2>Contenido Inicial</h2>
-                            <p>Este es el contenido cuando está en posición inicial.</p>
+                <div id="divFijo" >
+                    <img src={Image} alt="" />
+                    <button class="butCot">
+
+                        <div class="text" onClick={abrirURL}>
+                            Cotizar
                         </div>
-                    ) : (
-                        // Contenido cuando se hace scroll
-                        <div>
-                            <h2>Contenido Scroll</h2>
-                            <p>Este es el contenido cuando se hace scroll hacia abajo.</p>
+                    </button>
+<Link to={'/cart'}>
+                    <button class="butCar">
+                        <div class="text">
+                            Añadir al Carrito
                         </div>
-                    )}
+                    </button>
+</Link>
+
+                    <h3>Duracion</h3>
+                    <p className='duracion'>6 Meses</p>
+                    <h3>Requisitos min. del equipo</h3>
+                    <ul>
+                        <li>Computadora con procesador i7 o superior</li>
+                        <li>4GB de RAM</li>
+                        <li>Internet de 10MB</li>
+                    </ul>
                 </div>
+                <div className='contPag'>
+                    <h1>Pensum</h1>
+                    <ul className='pens'>
+                        <li>Computadora con procesador i7 o superior</li>
+                        <li>4GB de RAM</li>
+                        <li>Internet de 10MB</li>
+                        <li>Computadora con procesador i7 o superior</li>
+                        <li>4GB de RAM</li>
+                        <li>Internet de 10MB</li>
+                        <li>Computadora con procesador i7 o superior</li>
+                        <li>4GB de RAM</li>
+                        <li>Internet de 10MB</li>
+                    </ul>
+                </div>
+                <div className="section">
+                <CarouselCourses />
             </div>
-            <div className="section">
-            <CarouselCourses />
             </div>
+
         </>
     );
 };

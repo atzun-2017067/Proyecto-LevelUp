@@ -209,6 +209,7 @@ export const AddCoursesPage = () => {
                                         <li style={{ listStyle: 'none' }}>⠀⠀⠀</li>
                                         <li style={{ listStyle: 'none' }}>⠀⠀⠀</li>
                                         <li style={{ listStyle: 'none' }}>⠀⠀⠀</li>
+                                        <li style={{ listStyle: 'none' }}>⠀⠀⠀</li>
                                     </ul>
                                 )}
                             </div>

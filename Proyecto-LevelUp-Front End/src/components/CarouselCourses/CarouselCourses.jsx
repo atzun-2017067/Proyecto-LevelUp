@@ -1,16 +1,33 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef , } from 'react';
 import './CarouselCourses.css';
+import { Link } from 'react-router-dom';
 
 import slide_image_7 from '../../components/CarouselImages/img/ht.jpg';
 import slide_image_6 from '../../assets/img/LevelUp.png'
 import slide_image_5 from '../../components/CarouselImages/img/image1.png';
 
 export const CarouselCourses = () => {
+
+  //url
+  const urlUV = 'course'
+  const urlU = 'course'
+  const [url, setUrl] = useState('');
+
   const wrapperRef = useRef(null);
   const carouselRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(null);
   const [startScrollLeft, setStartScrollLeft] = useState(null);
+
+  //Obtener la url
+
+  useEffect(() => {
+    // Obtenemos la URL actual
+    const resultado = window.location.href;
+    setUrl(resultado);
+    console.log('URL actual:', resultado);
+  }, []);
+
 
   useEffect(() => {
     //  ESTA ES LA SECCION DEL CARRUSEL
@@ -100,7 +117,7 @@ export const CarouselCourses = () => {
 
   return (
     <>
-      <div className="wrapper" ref={wrapperRef}>
+      <div className="wrapper" ref={wrapperRef} style={{backgroundColor: 'transparent'}}>
         <i className="bi bi-arrow-left fs-1" id='left'></i>
         <ul className="carousel" ref={carouselRef}>
 
@@ -109,15 +126,28 @@ export const CarouselCourses = () => {
             <div class="description">
               <p>Descripción de la tarjeta. Puedes agregar aquí información adicional sobre la tarjeta. Descripción de la tarjeta. Puedes agregar aquí información adicional sobre la tarjeta Descripción de la tarjeta. Puedes agregar aquí información.</p>
             </div>
-            <div className="buttons">
-              <button class="button">
-                <span class="button-content">Cotizar</span>
-              </button>
+            <div className="buttons">  {url === 'http://localhost:5173/course' ?(
+               <Link to={urlU}>
+               <button class="button">
+                 <span class="button-content">Verdadero</span>
+               </button>
+               </Link >
+              ):
+              (<>
+              <Link to={urlU}>
+               <button class="button">
+                 <span class="button-content">Cotizar</span>
+               </button>
+               </Link >
+              </>)
+              }
+<Link to={'cart'}>
               <button class="button">
                 <span class="button-content"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
                   <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z" />
                 </svg></span>
               </button>
+</Link>
             </div>
           </div>
 

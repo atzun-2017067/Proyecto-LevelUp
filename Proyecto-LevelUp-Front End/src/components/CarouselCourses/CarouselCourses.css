@@ -6,6 +6,7 @@
   align-items: center;
   justify-content: center;
   padding-top: 0%;
+  background-color: rgba(255, 255, 255, 0);
 }
 
 
@@ -67,6 +68,7 @@
   height: 260px;
   padding-top: 1%;
   width: 100%;
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .carousel::-webkit-scrollbar {
@@ -87,13 +89,14 @@
   height: 240px;
   position: relative;
   border-radius: 15px;
-  background: #ffffff;
+  background: #ffffff00;
   box-shadow: 2px 2px 4px #c4c4c4, -2px -2px 4px #ffffff;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   border: none;
   transition: 400ms transform, 400ms box-shadow, 400ms background-color;
+  background-color: #fff;
 }
 
 .carousel .card img {
@@ -223,14 +226,16 @@
 }
 
 /* Otras media queries para ajustar las columnas en diferentes tamaños de pantalla */
-@media screen and (max-width: 900px) {
-  .wrapper .carousel {
-    grid-auto-columns: calc((100% / 2) - 9px);
-  }
-}
 
-@media screen and (max-width: 819px) {
+
+/* @media (max-width: 1300px) {
   .wrapper .carousel {
-    grid-auto-columns: calc((90% / 3) - 9px);
+    grid-auto-columns: calc((300% / 5) - 90px);
+  }
+} */
+
+@media (max-width: 1200px) {
+  .wrapper .carousel {
+    grid-auto-columns: calc((200% / 5) - 9px);
   }
 }
