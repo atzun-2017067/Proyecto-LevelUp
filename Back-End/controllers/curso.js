@@ -1,6 +1,7 @@
 const { response, request } = require('express');
 
 const Curso = require('../models/curso');
+const Multimedia = require('../models/multimedia');
 
 const getCurso = async (req = request, res = response) => {
     try {
@@ -84,8 +85,15 @@ const postCurso = async (req = request, res = response) => {
             duracion,
             especialidad,
             enlaceRegistro,
-            imagenPortada,
             estado
+        });
+
+        const cursoId = nuevoCurso.id;
+
+        // Crea la imagen de portada en la base de datos 2 (db_cursos_level_up_2)
+        const nuevaImagenPortada = await Multimedia.create({
+            imagenPortada,
+            cursoId // Asocia la imagen de portada con el curso recién creado
         });
 
         // Formatea las fechas antes de enviar la respuesta

@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { dbConnection } = require('../database/config');
+const Multimedia = require('./multimedia');
 
 // Define el modelo 'Curso'
 const Curso = dbConnection.define('Curso', {
@@ -30,7 +31,7 @@ const Curso = dbConnection.define('Curso', {
             }
         }
     },
-    pensum: {
+    pensum: { // SE CAMBIA A ARCHIVO JSON YA QUE ES TIPO LISTADO
         type: DataTypes.TEXT,
         allowNull: false,
         validate: {
@@ -119,10 +120,6 @@ const Curso = dbConnection.define('Curso', {
                 msg: 'El enlace de registro para el usuario no puede estar vacío'
             }
         }
-    },
-    imagenPortada: {
-        type: DataTypes.STRING,
-        defaultValue: 'Sin Imagen'
     },
     estado: {
         type: DataTypes.BOOLEAN,
