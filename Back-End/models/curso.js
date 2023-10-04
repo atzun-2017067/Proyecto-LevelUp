@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const { dbConnection } = require('../database/config');
-const Multimedia = require('./multimedia');
 
 // Define el modelo 'Curso'
 const Curso = dbConnection.define('Curso', {

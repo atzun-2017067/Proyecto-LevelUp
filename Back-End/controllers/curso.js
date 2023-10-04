@@ -6,15 +6,28 @@ const Multimedia = require('../models/multimedia');
 const getCurso = async (req = request, res = response) => {
     try {
         console.log('Intentando obtener cursos con estado "true"...');
-        const listaCursos = await Curso.findAll({ where: { estado: 'true' } });
+        const listaCursos = await Curso.findAll({ 
+            where: { estado: 'true' }
+        });
 
         // Formatear las fechas y horas en zona horaria local (Guatemala)
-        const cursosFormateados = listaCursos.map((curso) => ({
-            ...curso.toJSON(),
-            createdAt: new Date(curso.createdAt).toLocaleString('es-GT', { timeZone: 'America/Guatemala' }),
-            updatedAt: new Date(curso.updatedAt).toLocaleString('es-GT', { timeZone: 'America/Guatemala' }),
-            requisitosEquipo: curso.requisitosEquipo, // Analizar la cadena JSON
-        }));
+        const cursosFormateados = [];
+
+        for (const curso of listaCursos) {
+            const cursoInfo = curso.toJSON();
+            const cursoId = cursoInfo.id;
+
+            // Consulta para obtener información multimedia desde la segunda base de datos
+            const multimediaInfo = await Multimedia.findByPk(cursoId);
+
+            cursosFormateados.push({
+                ...cursoInfo,
+                createdAt: new Date(cursoInfo.createdAt).toLocaleString('es-GT', { timeZone: 'America/Guatemala' }),
+                updatedAt: new Date(cursoInfo.updatedAt).toLocaleString('es-GT', { timeZone: 'America/Guatemala' }),
+                requisitosEquipo: cursoInfo.requisitosEquipo, // Analizar la cadena JSON
+                multimedia: multimediaInfo // Agregar información de la multimedia
+            });
+        }
 
         console.log('Cursos encontrados:', cursosFormateados);
         res.status(200).json(cursosFormateados);
@@ -23,6 +36,7 @@ const getCurso = async (req = request, res = response) => {
         res.status(500).json({ error: 'Error en el servidor' });
     }
 }
+
 
 const postCurso = async (req = request, res = response) => {
     try {
@@ -92,8 +106,8 @@ const postCurso = async (req = request, res = response) => {
 
         // Crea la imagen de portada en la base de datos 2 (db_cursos_level_up_2)
         const nuevaImagenPortada = await Multimedia.create({
-            imagenPortada,
-            cursoId // Asocia la imagen de portada con el curso recién creado
+            cursoId, // Asocia la imagen de portada con el curso recién creado
+            imagenPortada
         });
 
         // Formatea las fechas antes de enviar la respuesta
@@ -103,7 +117,8 @@ const postCurso = async (req = request, res = response) => {
 
         res.status(201).json({
             ok: true,
-            curso: cursoGuardado
+            curso: cursoGuardado,
+            multimedia: nuevaImagenPortada
         });
 
     } catch (error) {
@@ -238,10 +253,21 @@ const deleteCurso = async (req = request, res = response) => {
             return res.status(404).json({ error: 'El curso no fue encontrado' });
         }
 
+         // Obtener el ID de la imagen de portada asociada al curso
+         const cursoId = cursoExistente.id;
+
+         // Buscar la imagen de portada en la base de datos de Multimedia utilizando el ID del curso
+         const imagenPortadaExistente = await Multimedia.findByPk(cursoId);
+
         // Eliminar el curso de la base de datos
         await cursoExistente.destroy();
 
-        res.json({ ok: true, mensaje: 'Curso eliminado correctamente' });
+        // Si se encuentra la imagen de portada, eliminarla también
+        if (imagenPortadaExistente) {
+            await imagenPortadaExistente.destroy();
+        }
+
+        res.json({ ok: true, mensaje: 'Curso y su imagen de portada eliminados correctamente' });
 
     } catch (error) {
         console.error(error);

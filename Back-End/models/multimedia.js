@@ -8,21 +8,15 @@ const Multimedia = dbConnection2.define('Multimedia', {
     primaryKey: true,
     autoIncrement: true,
   },
+  cursoId: { // Asegúrate de que esta columna exista en el modelo Multimedia
+    type: DataTypes.INTEGER, // El tipo de dato debe coincidir con el de la columna correspondiente en Curso
+    allowNull: false, // Puedes ajustar esto según tus necesidades
+  },
   imagenPortada: {
     type: DataTypes.STRING,
     defaultValue: 'Sin Imagen'
   }
 })
-
-console.log('Antes de la sincronización de Multimedia');
-Multimedia.sync({ alter: true })
-  .then(() => {
-    console.log('Modelo de Multimedia sincronizado con la base de datos 2');
-  })
-  .catch((error) => {
-    console.error('Error al sincronizar el modelo de Multimedia:', error);
-  });
-console.log('Después de la sincronización de Multimedia');
 
 // Exporta el modelo para que pueda ser utilizado en otras partes de la aplicación
 module.exports = Multimedia;
