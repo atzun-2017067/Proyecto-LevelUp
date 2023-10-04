@@ -10,8 +10,7 @@ export const CoursePage = () => {
     const url = 'https://levelup.gt/form';
     const abrirURL = () => {
         window.location.href = url;
-      };
-
+    };
     return (
         <>
             <Navbar></Navbar>
@@ -40,13 +39,13 @@ export const CoursePage = () => {
                             Cotizar
                         </div>
                     </button>
-<Link to={'/cart'}>
-                    <button class="butCar">
-                        <div class="text">
-                            Añadir al Carrito
-                        </div>
-                    </button>
-</Link>
+                    <Link to={'/cart'}>
+                        <button class="butCar">
+                            <div class="text">
+                                Añadir al Carrito
+                            </div>
+                        </button>
+                    </Link>
 
                     <h3>Duracion</h3>
                     <p className='duracion'>6 Meses</p>
@@ -72,8 +71,8 @@ export const CoursePage = () => {
                     </ul>
                 </div>
                 <div className="section">
-                <CarouselCourses />
-            </div>
+                    <CarouselCourses />
+                </div>
             </div>
 
         </>
