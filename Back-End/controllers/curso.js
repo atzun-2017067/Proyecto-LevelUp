@@ -6,7 +6,7 @@ const Multimedia = require('../models/multimedia');
 const getCurso = async (req = request, res = response) => {
     try {
         console.log('Intentando obtener cursos con estado "true"...');
-        const listaCursos = await Curso.findAll({ 
+        const listaCursos = await Curso.findAll({
             where: { estado: 'true' }
         });
 
@@ -20,12 +20,16 @@ const getCurso = async (req = request, res = response) => {
             // Consulta para obtener información multimedia desde la segunda base de datos
             const multimediaInfo = await Multimedia.findByPk(cursoId);
 
+            // Convierte la imagen de portada de buffer a cadena Base64
+            const imagenPortadaBase64 = multimediaInfo.imagenPortada.toString('base64');
+
             cursosFormateados.push({
                 ...cursoInfo,
                 createdAt: new Date(cursoInfo.createdAt).toLocaleString('es-GT', { timeZone: 'America/Guatemala' }),
                 updatedAt: new Date(cursoInfo.updatedAt).toLocaleString('es-GT', { timeZone: 'America/Guatemala' }),
                 requisitosEquipo: cursoInfo.requisitosEquipo, // Analizar la cadena JSON
-                multimedia: multimediaInfo // Agregar información de la multimedia
+                multimedia: multimediaInfo.toJSON, // Agregar información de la multimedia
+                imagenPortada: imagenPortadaBase64 // Agrega la imagen como cadena Base64
             });
         }
 
@@ -54,6 +58,9 @@ const postCurso = async (req = request, res = response) => {
             imagenPortada,
             estado
         } = req.body
+
+        // Convierte la imagen de portada de buffer a cadena Base64
+        const imagenPortadaBase64 = imagenPortada.toString('base64');
 
         // Verifica si nombreCurso está presente en el cuerpo de la solicitud
         if (!nombreCurso) {
@@ -118,7 +125,9 @@ const postCurso = async (req = request, res = response) => {
         res.status(201).json({
             ok: true,
             curso: cursoGuardado,
-            multimedia: nuevaImagenPortada
+            multimedia: {
+                nuevaImagenPortada: imagenPortadaBase64
+            }
         });
 
     } catch (error) {
@@ -217,8 +226,22 @@ const putCurso = async (req = request, res = response) => {
                 where: { id },
             });
 
-        if (dataActualizada === 0) {
-            return res.status(404).json({ error: 'El curso no fue encontrado' });
+        // Convierte la imagen de portada de buffer a cadena Base64
+        const imagenPortadaBase64 = imagenPortada.toString('base64');
+
+        // Actualiza la imagen de portada si se proporciona una nueva
+        if (imagenPortada) {
+            const cursoId = cursoExistente.id;
+
+            // Busca la imagen de portada existente en la base de datos de Multimedia
+            const imagenPortadaExistente = await Multimedia.findByPk(cursoId);
+
+            // Si existe una imagen de portada existente, actualízala; de lo contrario, crea una nueva
+            if (imagenPortadaExistente) {
+                await imagenPortadaExistente.update({ imagenPortada });
+            } else {
+                await Multimedia.create({ cursoId, imagenPortada });
+            }
         }
 
         res.json({ ok: true, mensaje: 'Curso actualizado correctamente' });
@@ -253,11 +276,11 @@ const deleteCurso = async (req = request, res = response) => {
             return res.status(404).json({ error: 'El curso no fue encontrado' });
         }
 
-         // Obtener el ID de la imagen de portada asociada al curso
-         const cursoId = cursoExistente.id;
+        // Obtener el ID de la imagen de portada asociada al curso
+        const cursoId = cursoExistente.id;
 
-         // Buscar la imagen de portada en la base de datos de Multimedia utilizando el ID del curso
-         const imagenPortadaExistente = await Multimedia.findByPk(cursoId);
+        // Buscar la imagen de portada en la base de datos de Multimedia utilizando el ID del curso
+        const imagenPortadaExistente = await Multimedia.findByPk(cursoId);
 
         // Eliminar el curso de la base de datos
         await cursoExistente.destroy();

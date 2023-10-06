@@ -13,7 +13,7 @@ const Multimedia = dbConnection2.define('Multimedia', {
     allowNull: false, // Puedes ajustar esto según tus necesidades
   },
   imagenPortada: {
-    type: DataTypes.STRING,
+    type: DataTypes.BLOB,
     defaultValue: 'Sin Imagen'
   }
 })

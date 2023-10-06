@@ -31,16 +31,16 @@ const Curso = dbConnection.define('Curso', {
         }
     },
     pensum: { // SE CAMBIA A ARCHIVO JSON YA QUE ES TIPO LISTADO
-        type: DataTypes.TEXT,
+        type: DataTypes.JSON, // Cambia el tipo de datos a JSON
         allowNull: false,
-        validate: {
-            notNull: {
-                msg: 'El pensum del curso es requerido'
-            },
-            notEmpty: {
-                msg: 'El pensum del curso no puede estar vacío'
-            }
-        }
+        get() {
+            // Al recuperar los datos, convierte la cadena JSON a un objeto JavaScript
+            return JSON.parse(this.getDataValue('pensum'));
+        },
+        set(val) {
+            // Al guardar los datos, convierte el objeto JavaScript a una cadena JSON
+            this.setDataValue('pensum', JSON.stringify(val));
+        },
     },
     descripcion: {
         type: DataTypes.TEXT,
