@@ -2,53 +2,63 @@ import React, { useState } from 'react';
 import './AddCoursesPage.css';
 import { Navbar } from '../../components/Navbar/Navbar';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
 export const AddCoursesPage = () => {
     const [curso, setCurso] = useState({
         nombreCurso: '',
         modalidad: '',
-        pensum: '',
         descripcion: '',
-        // requisitosEquipo: '',
         precioCurso: '',
         precioPracticaMes: '',
         duracion: '',
         especialidad: '',
-        // imagenPortada: '',
-        estado: true, // Valor predeterminado
+        imagenPortada: null,
+        estado: true,
     });
+
     const clearForm = () => {
         setCurso({
             nombreCurso: '',
             modalidad: '',
-            pensum: '',
             descripcion: '',
             precioCurso: '',
             precioPracticaMes: '',
             duracion: '',
             especialidad: '',
+            imagenPortada: null,
             estado: true,
         });
     };
 
-
-
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        if (curso.imagenPortada === null) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Por favor, seleccione una imagen',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
         try {
-            const response = await fetch('http://localhost:3000/api/cursos/agregar', {
-                method: 'POST',
+            const formData = new FormData();
+
+            // Agrega los datos del curso al formData
+            for (const key in curso) {
+                formData.append(key, curso[key]);
+            }
+
+            const response = await axios.post('http://localhost:3000/api/cursos/agregar', formData, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                 },
-                body: JSON.stringify(curso),
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Respuesta del servidor:', data);
-
+            if (response.status === 201) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Éxito',
@@ -61,12 +71,19 @@ export const AddCoursesPage = () => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'INGRESE TODOS LOS DATOS SOLICITADOS',
+                    text: 'Error en la solicitud al servidor',
                     confirmButtonText: 'OK'
                 });
             }
         } catch (error) {
             console.error('Error al agregar el curso:', error);
+            console.log(formData)
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error al agregar el curso',
+                confirmButtonText: 'OK'
+            });
         }
     };
 
@@ -78,14 +95,20 @@ export const AddCoursesPage = () => {
         });
     };
 
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        setCurso({
+            ...curso,
+            imagenPortada: file,
+        });
+    };
+
     return (
         <>
             <Navbar />
-            <div className="glo" >
-                <h1>Agrega Nuevo Curso</h1>
+            <div className="glo">
+                <h1>Agregar Nuevo Curso</h1>
                 <div className="conte">
-
-
                     <form className="form" onSubmit={handleSubmit}>
                         <div className="contenedor">
                             <div className="item">
@@ -108,14 +131,13 @@ export const AddCoursesPage = () => {
                                     value={curso.modalidad}
                                     onChange={handleChange}
                                 >
-                                    <option value="">seleccione una opcion</option>
+                                    <option value="">Seleccione una opción</option>
                                     <option value="Presencial">Presencial</option>
-                                    <option value='Virtual, con clases en vivo(sincronico)'>Virtual, con clases en vivo</option>
+                                    <option value='Virtual, con clases en vivo(sincrónico)'>Virtual, con clases en vivo</option>
                                 </select>
                             </div>
                             <div className="item">
                                 <p className='pe'>Pensum</p>
-
                                 <input
                                     type="text"
                                     name="pensum"
@@ -124,24 +146,21 @@ export const AddCoursesPage = () => {
                                     onChange={handleChange}
                                     placeholder="ej. Certificado de..."
                                 />
-
                             </div>
-                            <div class="item">
-                                <p className='pe'>Descripcion</p>
-
+                            <div className="item">
+                                <p className='pe'>Descripción</p>
                                 <input
                                     id='descripcion'
-                                    type="form-control"
+                                    type="text"
                                     name="descripcion"
                                     value={curso.descripcion}
                                     maxLength={232}
-                                    placeholder="max. 232 letras"
+                                    placeholder="Máx. 232 letras"
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div class="item">
+                            <div className="item">
                                 <p className='pe'>Especialidad</p>
-
                                 <select
                                     className='form-select'
                                     id='especialidad'
@@ -149,15 +168,13 @@ export const AddCoursesPage = () => {
                                     value={curso.especialidad}
                                     onChange={handleChange}
                                 >
-                                    <option value="">seleccione una opcion</option>
+                                    <option value="">Seleccione una opción</option>
                                     <option value="Marketing">Marketing</option>
                                     <option value='Tecnología'>Tecnología</option>
                                 </select>
-
                             </div>
-                            <div class="item">
+                            <div className="item">
                                 <p className='pe'>Tarifa del curso</p>
-
                                 <input
                                     type="number"
                                     name="precioCurso"
@@ -167,9 +184,8 @@ export const AddCoursesPage = () => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div class="item">
+                            <div className="item">
                                 <p className='pe'>Precio por mes</p>
-
                                 <input
                                     type="number"
                                     id='precioPracticaMes'
@@ -179,9 +195,8 @@ export const AddCoursesPage = () => {
                                     placeholder="ej. 200"
                                 />
                             </div>
-                            <div class="item">
-                                <p className='pe'>Duracion</p>
-
+                            <div className="item">
+                                <p className='pe'>Duración</p>
                                 <input
                                     type="text"
                                     id='duracion'
@@ -191,8 +206,8 @@ export const AddCoursesPage = () => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div>
-                                <p className='pe'>Requisitos min. del equipo</p>
+                            <div className="item">
+                                <p className='pe'>Requisitos mín. del equipo</p>
                                 {curso.especialidad === 'Marketing' ? (
                                     <ul>
                                         <li>Computadora con procesador Core i5 o superior</li>
@@ -213,30 +228,27 @@ export const AddCoursesPage = () => {
                                     </ul>
                                 )}
                             </div>
-                            <div class="item">
-                                <p className='pe'>Agregar Imagen</p>
-                                <label class="custom-file-input">
-                                    <i class="bi bi-card-image"></i>
-                                    <span class="custom-file-label">Seleccionar Imagen</span>
+                            <div className="item">
+                                <label className="custom-file-input">
+                                    <i className="bi bi-card-image"></i>
+                                    <span className="custom-file-label">Seleccionar Imagen</span>
                                     <input
                                         type="file"
                                         name="imagenPortada"
                                         id='imagenPortada'
                                         accept=".jpg, .jpeg, .png, .gif"
-                                        onChange={(e) => setCurso({ ...curso, imagenPortada: e.target.files[0] })}
+                                        onChange={handleImageChange}
                                     />
                                 </label>
                             </div>
                         </div>
                         <button className="noselect" type='submit'>
-                            <span class="text">Agregar</span>
-                            <span class="icon"><i class="bi bi-check2-all fs-2"></i></span>
+                            <span className="text">Agregar</span>
+                            <span className="icon"><i className="bi bi-check2-all fs-2"></i></span>
                         </button>
                     </form>
-
-
                 </div>
             </div>
         </>
-    )
-}
+    );
+};

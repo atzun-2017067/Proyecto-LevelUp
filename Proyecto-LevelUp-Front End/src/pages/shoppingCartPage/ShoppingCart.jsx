@@ -78,7 +78,7 @@ export const ShoppingCart = () => {
           </div>
         </div>
       </div>
-      <CarouselCourses></CarouselCourses>
+      {/* <CarouselCourses></CarouselCourses> */}
     </>
   )
 }

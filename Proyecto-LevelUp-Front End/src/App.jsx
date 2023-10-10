@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect, useState, createContext} from 'react';
+import axios from 'axios';
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import {CoursesPage} from './pages/CoursesPage/CoursesPage'
@@ -10,8 +11,26 @@ import { CoursePage } from './pages/CoursePage/CoursePage';
 import { ShoppingCart } from './pages/shoppingCartPage/ShoppingCart';
 
 
+export const NombreContexto = createContext()
 
 function App() {
+  const [carritoId, setCarritoId] = useState(null);
+
+  useEffect(() => {
+      // Realiza una solicitud a tu backend para obtener la información de la sesión
+      axios.get('http://localhost:3000/api/cursocarrito/mostrar/sesion')
+          .then(response => {
+              // Verifica si se encontró un ID de carrito en la sesión
+              if (response.data && response.data.carritoId) {
+                  // Guarda el ID del carrito en el localStorage
+                  localStorage.setItem('carritoId', response.data.carritoId);
+                  setCarritoId(response.data.carritoId);
+              }
+          })
+          .catch(error => {
+              console.error('Error al obtener la información de sesión', error);
+          });
+  }, []);
 
 
   return (

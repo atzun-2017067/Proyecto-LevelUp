@@ -71,7 +71,7 @@ export const CoursePage = () => {
                     </ul>
                 </div>
                 <div className="section">
-                    <CarouselCourses />
+                    {/* <CarouselCourses /> */}
                 </div>
             </div>
 
