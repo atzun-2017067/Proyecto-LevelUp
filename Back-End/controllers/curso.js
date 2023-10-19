@@ -1,5 +1,7 @@
 const { response, request } = require('express');
 
+const sharp = require('sharp'); // Agrega esta importación
+
 const Curso = require('../models/curso');
 const Multimedia = require('../models/multimedia');
 
@@ -7,7 +9,7 @@ const getCurso = async (req = request, res = response) => {
     try {
         console.log('Intentando obtener cursos con estado "true"...');
         const listaCursos = await Curso.findAll({
-            where: { estado: 'true' }
+            where: { estado: 1 }
         });
 
         // Formatear las fechas y horas en zona horaria local (Guatemala)
@@ -33,7 +35,6 @@ const getCurso = async (req = request, res = response) => {
             });
         }
 
-        console.log('Cursos encontrados:', cursosFormateados);
         res.status(200).json(cursosFormateados);
     } catch (error) {
         console.error('Error al obtener cursos:', error);
@@ -55,12 +56,11 @@ const postCurso = async (req = request, res = response) => {
             duracion,
             especialidad,
             enlaceRegistro,
-            imagenPortada,
             estado
         } = req.body
 
-        // Convierte la imagen de portada de buffer a cadena Base64
-        const imagenPortadaBase64 = imagenPortada.toString('base64');
+        // Procesa la carga de la imagen
+        const imagenPortada = req.file;
 
         // Verifica si nombreCurso está presente en el cuerpo de la solicitud
         if (!nombreCurso) {
@@ -95,6 +95,19 @@ const postCurso = async (req = request, res = response) => {
             ];
         }
 
+        // Redimensiona y comprime la imagen antes de almacenarla
+        const opcionesDeCompresión = {
+            quality: 80, // Ajusta la calidad de compresión (0-100)
+            fit: 'inside', // Ajusta la imagen al tamaño máximo especificado
+            width: 600, // Establece el ancho máximo deseado
+            height: 400, // Establece el alto máximo deseado
+        };
+
+        const imagenComprimidaBuffer = await sharp(imagenPortada.buffer)
+            .resize(opcionesDeCompresión.width, opcionesDeCompresión.height)
+            .jpeg({ quality: opcionesDeCompresión.quality })
+            .toBuffer();
+
         const nuevoCurso = await Curso.create({
             nombreCurso,
             modalidad,
@@ -112,9 +125,9 @@ const postCurso = async (req = request, res = response) => {
         const cursoId = nuevoCurso.id;
 
         // Crea la imagen de portada en la base de datos 2 (db_cursos_level_up_2)
-        const nuevaImagenPortada = await Multimedia.create({
+        await Multimedia.create({
             cursoId, // Asocia la imagen de portada con el curso recién creado
-            imagenPortada
+            imagenPortada: imagenComprimidaBuffer
         });
 
         // Formatea las fechas antes de enviar la respuesta
@@ -126,10 +139,9 @@ const postCurso = async (req = request, res = response) => {
             ok: true,
             curso: cursoGuardado,
             multimedia: {
-                nuevaImagenPortada: imagenPortadaBase64
+                nuevaImagenPortada: imagenComprimidaBuffer.toString('base64')
             }
         });
-
     } catch (error) {
         // Captura los errores personalizados definidos en el modelo Sequelize
         if (error.name === 'SequelizeValidationError') {
@@ -162,11 +174,12 @@ const putCurso = async (req = request, res = response) => {
         duracion,
         especialidad,
         enlaceRegistro,
-        imagenPortada,
         estado
     } = req.body
 
     let cursoMismoNombre; // Declarar cursoMismoNombre fuera del bloque if
+
+    const imagenPortada = req.file; // Manejar la imagen como un archivo
 
     try {
         // Verificar si el curso con el ID proporcionado existe
@@ -207,7 +220,7 @@ const putCurso = async (req = request, res = response) => {
         }
 
         // Intenta actualizar el curso con los datos proporcionados
-        const [dataActualizada] = await Curso.update(
+        await cursoExistente.update(
             {
                 nombreCurso,
                 modalidad,
@@ -226,11 +239,21 @@ const putCurso = async (req = request, res = response) => {
                 where: { id },
             });
 
-        // Convierte la imagen de portada de buffer a cadena Base64
-        const imagenPortadaBase64 = imagenPortada.toString('base64');
-
         // Actualiza la imagen de portada si se proporciona una nueva
         if (imagenPortada) {
+            // Redimensiona y comprime la imagen antes de almacenarla
+            const opcionesDeCompresión = {
+                quality: 80, // Ajusta la calidad de compresión (0-100)
+                fit: 'inside', // Ajusta la imagen al tamaño máximo especificado
+                width: 600, // Establece el ancho máximo deseado
+                height: 400, // Establece el alto máximo deseado
+            };
+
+            const imagenComprimidaBuffer = await sharp(imagenPortada.buffer)
+                .resize(opcionesDeCompresión.width, opcionesDeCompresión.height)
+                .jpeg({ quality: opcionesDeCompresión.quality })
+                .toBuffer();
+
             const cursoId = cursoExistente.id;
 
             // Busca la imagen de portada existente en la base de datos de Multimedia
@@ -238,9 +261,9 @@ const putCurso = async (req = request, res = response) => {
 
             // Si existe una imagen de portada existente, actualízala; de lo contrario, crea una nueva
             if (imagenPortadaExistente) {
-                await imagenPortadaExistente.update({ imagenPortada });
+                await imagenPortadaExistente.update({ imagenPortada: imagenComprimidaBuffer });
             } else {
-                await Multimedia.create({ cursoId, imagenPortada });
+                await Multimedia.create({ cursoId, imagenPortada: imagenComprimidaBuffer });
             }
         }
 
@@ -258,7 +281,7 @@ const putCurso = async (req = request, res = response) => {
             console.log(error);
             res.status(500).json({
                 ok: false,
-                error: 'Error al crear el curso'
+                error: 'Error al actualizar el curso'
             });
         }
     }
