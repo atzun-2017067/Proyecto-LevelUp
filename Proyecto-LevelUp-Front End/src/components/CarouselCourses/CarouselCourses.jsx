@@ -9,6 +9,9 @@ export const CarouselCourses = () => {
   const [startIndex, setStartIndex] = useState(0);
   const cardsPerPage = 4; // Número de tarjetas por página
 
+
+
+
   useEffect(() => {
     // Realizar la solicitud para obtener los datos de la API
     axios.get('http://localhost:3000/api/cursos/mostrar')
@@ -20,6 +23,7 @@ export const CarouselCourses = () => {
         console.error('Error al obtener cursos:', error);
       });
   }, []);
+
 
   // Función para ir a la página anterior
   const prevPage = () => {
@@ -53,8 +57,8 @@ export const CarouselCourses = () => {
               <div className="buttons">
               <Link to={`/course/${curso.id}`}>
                   <button class="button">
-                    <span class="button-content">Cotizar</span>
-                  </button>
+                  <span class="button-content">Cotizar</span>
+                </button>
                 </Link >
                 <Link to={'cart'}>
                   <button class="button">

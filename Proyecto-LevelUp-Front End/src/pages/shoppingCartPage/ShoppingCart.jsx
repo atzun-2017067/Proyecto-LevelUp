@@ -5,10 +5,28 @@ import { CarouselCourses } from '../../components/CarouselCourses/CarouselCourse
 import Image from '../../assets/img/re.jpg'
 
 export const ShoppingCart = () => {
+
+  const [cursos, setCursos] = useState([]);
+
   const url = 'https://levelup.gt/form';
     const abrirURL = () => {
         window.location.href = url;
       };
+
+
+  useEffect(() => {
+    // Realizar la solicitud para obtener los datos de la API
+    axios.get('http://localhost:3000/api/cursocarrito/mostrar')
+      .then(response => {
+        // Actualizar el estado con los datos obtenidos
+        setCursos(response.data);
+      })
+      .catch(error => {
+        console.error('Error al obtener cursos:', error);
+      });
+  }, []);
+
+console.log(response.data)
 
   return (
     <>

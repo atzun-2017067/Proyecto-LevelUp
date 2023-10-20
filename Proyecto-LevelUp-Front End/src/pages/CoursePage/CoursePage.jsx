@@ -26,6 +26,27 @@ export const CoursePage = () => {
       });
   }, [id]);
 
+
+
+  const crearCarrito = async (id) => {
+    try {
+      if (id) {
+        const response = await axios.post('http://localhost:3000/api/cursocarrito/agregar', { cursoIds: [id] });
+        // Si la solicitud es exitosa, puedes acceder a la respuesta
+        console.log('Carrito creado:', response.data);
+      } else {
+        console.error('Error: ID del curso no proporcionado.');
+        // Aquí puedes mostrar un mensaje de error o realizar otra acción predeterminada
+      }
+    } catch (error) {
+      // Manejo de errores en caso de una solicitud fallida
+      console.error('Error al crear el carrito:', error);
+    }
+  };
+
+
+
+
   // Verificar si curso tiene datos antes de acceder a sus propiedades
   if (!curso) {
     return <div>Cargando...</div>; // Muestra un mensaje de carga mientras se obtienen los datos
@@ -69,11 +90,10 @@ export const CoursePage = () => {
             </div>
           </button>
           <Link to={'/cart'}>
-            <button className="butCar">
-              <div className="text">
-                Añadir al Carrito
-              </div>
-            </button>
+          <button className="butCar" onClick={() => crearCarrito(id)}>
+  <div className="text">Añadir al Carrito</div>
+</button>
+
           </Link>
           <h3>Duración</h3>
           <p className='duracion'>{curso.duracion}</p>

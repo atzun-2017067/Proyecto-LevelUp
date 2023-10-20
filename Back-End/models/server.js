@@ -1,9 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 
-const { dbConnection, sessionStore,
-     dbConnection2
-} = require('../database/config'); // Importa la conexión a la base de datos
+const { dbConnection, sessionStore, dbConnection2 } = require('../database/config'); // Importa la conexión a la base de datos
 const session = require('express-session'); // Importa express-session
 const SincronizacionModelos = require('./sincronizacion')
 
@@ -58,7 +56,7 @@ class Server {
     routes() {
         this.app.use(this.paths.curso, require('../routes/curso'));
         this.app.use(this.paths.carrito, require('../routes/carrito'));
-        this.app.use(this.paths.cursocarrito, require('../routes/cursoCarrito'))
+        this.app.use(this.paths.cursocarrito, require('../routes/cursoCarrito'));
     }
 
     // Método para limpieza de sesiones expiradas

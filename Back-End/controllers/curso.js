@@ -1,87 +1,50 @@
 const { response, request } = require('express');
 
-const Curso = require('../models/curso');
-const Multimedia = require('../models/multimedia');
 const sharp = require('sharp'); // Agrega esta importación
 
-const getCurso = async (req = request, res = response) => {
+const Curso = require('../models/curso');
+const Multimedia = require('../models/multimedia');
 
+const getCurso = async (req = request, res = response) => {
     try {
 
-        console.log('Intentando obtener cursos con estado "true"...');
-
         const listaCursos = await Curso.findAll({
-
             where: { estado: 1 }
-
         });
 
-
-
         // Formatear las fechas y horas en zona horaria local (Guatemala)
-
         const cursosFormateados = [];
 
-
-
         for (const curso of listaCursos) {
-
             const cursoInfo = curso.toJSON();
-
             const cursoId = cursoInfo.id;
 
-
-
             // Consulta para obtener información multimedia desde la segunda base de datos
-
             const multimediaInfo = await Multimedia.findByPk(cursoId);
 
-
-
             // Convierte la imagen de portada de buffer a cadena Base64
-
             const imagenPortadaBase64 = multimediaInfo.imagenPortada.toString('base64');
 
-
-
             cursosFormateados.push({
-
                 ...cursoInfo,
-
                 createdAt: new Date(cursoInfo.createdAt).toLocaleString('es-GT', { timeZone: 'America/Guatemala' }),
-
                 updatedAt: new Date(cursoInfo.updatedAt).toLocaleString('es-GT', { timeZone: 'America/Guatemala' }),
-
                 requisitosEquipo: cursoInfo.requisitosEquipo, // Analizar la cadena JSON
-
                 multimedia: multimediaInfo.toJSON, // Agregar información de la multimedia
-
                 imagenPortada: imagenPortadaBase64 // Agrega la imagen como cadena Base64
-
             });
-
         }
 
-
-
         res.status(200).json(cursosFormateados);
-
     } catch (error) {
-
         console.error('Error al obtener cursos:', error);
-
         res.status(500).json({ error: 'Error en el servidor' });
-
     }
-
 }
 
 const getCursoById = async (req, res) => {
     const cursoId = req.params.id; // El ID se obtiene de los parámetros de la solicitud
-
     try {
-        console.log(`Intentando obtener el curso con ID ${cursoId}...`);
-
         // Intenta obtener el curso desde la base de datos
         const curso = await Curso.findOne({
             where: {
@@ -107,7 +70,6 @@ const getCursoById = async (req, res) => {
                     multimedia: multimediaInfo.toJSON(), // Agrega información de la multimedia
                     imagenPortada: imagenPortadaBase64, // Agrega la imagen como cadena Base64
                 };
-                console.log(cursoFormateado )
                 res.status(200).json(cursoFormateado);
             } else {
                 res.status(404).json({ error: `Información multimedia no encontrada para el curso con ID ${cursoId}` });
@@ -120,7 +82,6 @@ const getCursoById = async (req, res) => {
         res.status(500).json({ error: 'Error en el servidor' });
     }
 };
-
 
 
 const postCurso = async (req = request, res = response) => {
@@ -354,6 +315,8 @@ const postCurso = async (req = request, res = response) => {
     }
 
 }
+
+
 const putCurso = async (req = request, res = response) => {
     const { id } = req.params
 
@@ -367,11 +330,12 @@ const putCurso = async (req = request, res = response) => {
         duracion,
         especialidad,
         enlaceRegistro,
-        imagenPortada,
         estado
     } = req.body
 
     let cursoMismoNombre; // Declarar cursoMismoNombre fuera del bloque if
+
+    const imagenPortada = req.file; // Manejar la imagen como un archivo
 
     try {
         // Verificar si el curso con el ID proporcionado existe
@@ -412,7 +376,7 @@ const putCurso = async (req = request, res = response) => {
         }
 
         // Intenta actualizar el curso con los datos proporcionados
-        const [dataActualizada] = await Curso.update(
+        await cursoExistente.update(
             {
                 nombreCurso,
                 modalidad,
@@ -431,11 +395,21 @@ const putCurso = async (req = request, res = response) => {
                 where: { id },
             });
 
-        // Convierte la imagen de portada de buffer a cadena Base64
-        const imagenPortadaBase64 = imagenPortada.toString('base64');
-
         // Actualiza la imagen de portada si se proporciona una nueva
         if (imagenPortada) {
+            // Redimensiona y comprime la imagen antes de almacenarla
+            const opcionesDeCompresión = {
+                quality: 80, // Ajusta la calidad de compresión (0-100)
+                fit: 'inside', // Ajusta la imagen al tamaño máximo especificado
+                width: 600, // Establece el ancho máximo deseado
+                height: 400, // Establece el alto máximo deseado
+            };
+
+            const imagenComprimidaBuffer = await sharp(imagenPortada.buffer)
+                .resize(opcionesDeCompresión.width, opcionesDeCompresión.height)
+                .jpeg({ quality: opcionesDeCompresión.quality })
+                .toBuffer();
+
             const cursoId = cursoExistente.id;
 
             // Busca la imagen de portada existente en la base de datos de Multimedia
@@ -443,9 +417,9 @@ const putCurso = async (req = request, res = response) => {
 
             // Si existe una imagen de portada existente, actualízala; de lo contrario, crea una nueva
             if (imagenPortadaExistente) {
-                await imagenPortadaExistente.update({ imagenPortada });
+                await imagenPortadaExistente.update({ imagenPortada: imagenComprimidaBuffer });
             } else {
-                await Multimedia.create({ cursoId, imagenPortada });
+                await Multimedia.create({ cursoId, imagenPortada: imagenComprimidaBuffer });
             }
         }
 
@@ -463,7 +437,7 @@ const putCurso = async (req = request, res = response) => {
             console.log(error);
             res.status(500).json({
                 ok: false,
-                error: 'Error al crear el curso'
+                error: 'Error al actualizar el curso'
             });
         }
     }

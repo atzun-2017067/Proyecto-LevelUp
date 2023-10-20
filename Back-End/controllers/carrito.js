@@ -9,7 +9,8 @@ const postCarrito = async (req = request, res = response) => {
         // Formatea las fechas antes de enviar la respuesta
         const carritoGuardado = nuevoCarrito.toJSON();
         carritoGuardado.createdAt = new Date(carritoGuardado.createdAt).toLocaleString();
-        carritoGuardado.updatedAt = new Date(carritoGuardado.updatedAt).toLocaleString();
+        carritoGuardado.updatedAt = new Date(carritoGuardado.updatedAt).toLocaleString();;
+
         res.status(201).json({ ok: true, carrito: carritoGuardado });
     } catch (error) {
         console.error(error);

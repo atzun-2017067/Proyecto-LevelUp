@@ -4,45 +4,45 @@ const Carrito = require('../models/carrito');
 const Curso = require('../models/curso');
 
 
-const mostrarSesion = (req = request, res = response) => {
-    console.log(req.session, 'esta es la sesion'); // Muestra el objeto de sesión completo
-    // Obtén el ID del carrito desde la sesión
-    const carritoId = req.session.carritoId;
-
-    if (carritoId) {
-        res.status(200).json({ mensaje: 'ID del carrito en la sesión:', carritoId });
-    } else {
-        res.status(200).json({ mensaje: 'No se encontró ID de carrito en la sesión' });
-    }
-};
-
-
-const getCarrito = async (req = request, res = response) => {
-    try {
-        // Obtiene el ID del carrito desde la sesión del usuario
+    const mostrarSesion = (req = request, res = response) => {
+        console.log(req.session); // Muestra el objeto de sesión completo
+        // Obtén el ID del carrito desde la sesión
         const carritoId = req.session.carritoId;
 
-        if (!carritoId) {
-            return res.status(404).json({ error: 'Carrito no encontrado' });
+        if (carritoId) {
+            res.status(200).json({ mensaje: 'ID del carrito en la sesión:', carritoId });
+        } else {
+            res.status(200).json({ mensaje: 'No se encontró ID de carrito en la sesión' });
         }
+    };
 
-        // Busca el carrito por su ID
-        const carrito = await Carrito.findByPk(carritoId);
 
-        if (!carrito) {
-            return res.status(404).json({ error: 'Carrito no encontrado' });
+
+    const getCarrito = async (req = request, res = response) => {
+        try {
+            // Obtiene el ID del carrito desde la sesión del usuario
+            const carritoId = req.session.carritoId;
+
+            if (!carritoId) {
+                return res.status(404).json({ error: 'Carrito no encontrado' });
+            }
+
+            // Busca el carrito por su ID
+            const carrito = await Carrito.findByPk(carritoId);
+
+            if (!carrito) {
+                return res.status(404).json({ error: 'Carrito no encontrado' });
+            }
+
+            // Obtiene los cursos asociados al carrito utilizando la relación muchos a muchos
+            const cursos = await carrito.getCursos();
+
+            res.status(200).json(cursos);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Error al obtener los cursos del carrito' });
         }
-
-        // Obtiene los cursos asociados al carrito utilizando la relación muchos a muchos
-        const cursos = await carrito.getCursos();
-
-        res.status(200).json(cursos);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al obtener los cursos del carrito' });
-    }
-};
-
+    };
 
 
 const agregarAlCarrito = async (req = request, res = response) => {

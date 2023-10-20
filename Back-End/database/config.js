@@ -6,9 +6,7 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store); // I
 
 dotenv.config(); // Carga las variables de entorno desde el archivo .env
 
-const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME,
-  DB_NAME_2
-} = process.env;
+const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_NAME_2 } = process.env;
 
 // Función que crea y devuelve la conexión a la base de datos
 const dbConnection = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
