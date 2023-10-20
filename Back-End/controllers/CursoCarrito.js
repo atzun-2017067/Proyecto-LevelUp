@@ -5,7 +5,7 @@ const Curso = require('../models/curso');
 
 
 const mostrarSesion = (req = request, res = response) => {
-    console.log(req.session); // Muestra el objeto de sesión completo
+    console.log(req.session, 'esta es la sesion'); // Muestra el objeto de sesión completo
     // Obtén el ID del carrito desde la sesión
     const carritoId = req.session.carritoId;
 
