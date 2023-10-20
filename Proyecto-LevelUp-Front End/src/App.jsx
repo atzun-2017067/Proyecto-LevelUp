@@ -44,7 +44,7 @@ function App() {
         {/* Ruta para la página de inicio (página principal por defecto) */}
         <Route path="/" element={<CoursesPage />} />
         <Route path="/Add" element={<AddCoursesPage></AddCoursesPage>} />
-        <Route path="/course" element={<CoursePage />} />
+        <Route path="/course/:id" element={<CoursePage />} />
         <Route path="/cart" element={<ShoppingCart/>} />
         {/* Ruta para la página "Acerca de" */}
         {/* <Route path="/acerca-de" element={<AcercaDe />} /> */}

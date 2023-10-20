@@ -37,18 +37,21 @@ export const CarouselCourses = () => {
 
   return (
     <>
-      <div className="carousel-container">
+      <div className="carousel-container" >
       <i className="bi bi-arrow-left-circle-fill" onClick={prevPage} id='izquierda'></i>
         <div className="carousel">
           {cursos.slice(startIndex, startIndex + cardsPerPage).map(curso => (
             <div key={curso.id} className="card">
-<img src={imga} alt="" />
+<img
+              src={`data:image/png;base64, ${curso.imagenPortada}`}
+              alt={`Imagen de ${curso.nombreCurso}`}
+            />
 <h1>{curso.nombreCurso}</h1>
               <div class="description">
 <p>{curso.descripcion}</p>
               </div>
               <div className="buttons">
-                <Link to={'course'}>
+              <Link to={`/course/${curso.id}`}>
                   <button class="button">
                     <span class="button-content">Cotizar</span>
                   </button>

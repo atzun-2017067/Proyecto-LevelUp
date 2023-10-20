@@ -32,6 +32,8 @@
 
 .info .cont{
   display: flex;
+  margin-top: 29px;
+  margin-bottom: -20px;
 }
 
 .info .p {

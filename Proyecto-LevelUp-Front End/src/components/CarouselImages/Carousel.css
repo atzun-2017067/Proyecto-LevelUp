@@ -1,3 +1,4 @@
+
 /* *,
 *::before,
 *::after {
@@ -48,6 +49,23 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #222224;
+}
+
+
+#right{
+  background-color: #222224;
+  border-radius: 200px;
+  width: 200px;
+  padding: 10px;
+  color: white;
+}
+
+#left{
+  background-color: #222224;
+  border-radius: 200px;
+  width: 200px;
+  padding: 10px;
+  color: white;
 }
 
 ::-webkit-scrollbar-track {
