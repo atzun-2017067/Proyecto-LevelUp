@@ -1,8 +1,9 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import './shoppingCart.css'
 import { Navbar } from '../../components/Navbar/Navbar'
 import { CarouselCourses } from '../../components/CarouselCourses/CarouselCourses'
 import Image from '../../assets/img/re.jpg'
+import axios from 'axios'
 
 export const ShoppingCart = () => {
 
@@ -14,19 +15,22 @@ export const ShoppingCart = () => {
       };
 
 
-  useEffect(() => {
-    // Realizar la solicitud para obtener los datos de la API
-    axios.get('http://localhost:3000/api/cursocarrito/mostrar')
-      .then(response => {
-        // Actualizar el estado con los datos obtenidos
-        setCursos(response.data);
-      })
-      .catch(error => {
-        console.error('Error al obtener cursos:', error);
-      });
-  }, []);
 
-console.log(response.data)
+      useEffect(() => {
+        // Hacer la solicitud GET al servidor
+        axios.get('http://localhost:3000/api/cursocarrito/mostrar')
+          .then((response) => {
+            console.log('asdfasds')
+            // Cuando la solicitud es exitosa, actualiza el estado con los cursos
+            setCursos(response.data);
+          })
+          .catch((error) => {
+            // Manejar errores, por ejemplo, mostrar un mensaje de error
+            console.error('Error al obtener los cursos del carrito:', error);
+          });
+      }, []);
+
+
 
   return (
     <>

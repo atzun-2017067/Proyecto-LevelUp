@@ -15,9 +15,6 @@ export const CoursesPage = () => {
         <Carousel />
         <h1 className='title'>Cursos</h1>
         <CarouselCourses/>
-        <Link to={'/Add'}>
-        <button>a</button>
-        </Link>
       </body>
     </>
   )

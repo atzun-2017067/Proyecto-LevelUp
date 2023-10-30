@@ -23,6 +23,8 @@ const Curso = require('../models/curso');
             // Obtiene el ID del carrito desde la sesión del usuario
             const carritoId = req.session.carritoId;
 
+            console.log('SIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII PASA POR AQUI', carritoId)
+
             if (!carritoId) {
                 return res.status(404).json({ error: 'Carrito no encontrado' });
             }
@@ -53,6 +55,7 @@ const agregarAlCarrito = async (req = request, res = response) => {
         let carrito = await Carrito.findOne({ where: { estado: true } });
         if (!carrito) {
             carrito = await Carrito.create({ estado: true });
+            console.log('carrtio creado')
         }
 
         const errores = [];

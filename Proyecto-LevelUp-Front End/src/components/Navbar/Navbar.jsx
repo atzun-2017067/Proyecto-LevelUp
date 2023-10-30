@@ -1,6 +1,7 @@
 import React from 'react'
 import miImagen from '../../assets/img/LevelUp.png';
 import './Navbar.css'
+import { Link } from 'react-router-dom';
 
 export const Navbar = () => {
   return (
@@ -11,21 +12,27 @@ export const Navbar = () => {
     <div className="collapse navbar-collapse" id="navbarNav">
       <ul className="navbar-nav">
         <li className="nav-item">
-          <a className="nav-link active" aria-current="page" >Home</a>
+          <a className="nav-link" >Programas</a>
         </li>
         <li className="nav-item">
-          <a className="nav-link" >Features</a>
+          <a className="nav-link" >Ser mentor</a>
         </li>
         <li className="nav-item">
-          <a className="nav-link" >Pricing</a>
+          <a className="nav-link" >¿Por que Level Up?</a>
         </li>
         <li className="nav-item">
-          <a className="nav-link disabled"  tabindex="-1" aria-disabled="true">Disabled</a>
+          <a className="nav-link" >Contacto</a>
         </li>
+       <button className='rojo'> Aplicar</button>
+
+       <Link to={'/Add'}>
+        <button className='rojo'>Agregar Curso</button>
+        </Link>
       </ul>
     </div>
   </div>
 </nav>
+
 </>
   )
 }
